@@ -3,9 +3,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+*media/
+
 # C extensions
 *.so
-
+.vscode/*
+.vscode
+*static/
 # Distribution / packaging
 .Python
 build/
@@ -104,11 +108,14 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.venvp
 env/
 venv/
+venvp/
 ENV/
 env.bak/
 venv.bak/
+venvp.bak/
 
 # Spyder project settings
 .spyderproject
@@ -130,3 +137,4 @@ dmypy.json
 
 # .idea
 .idea
+backend/api/class RecipeViewSet(viewsets.ModelViewSe.py
