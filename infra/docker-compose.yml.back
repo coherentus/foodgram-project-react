@@ -10,8 +10,8 @@ services:
       - ./.env
 
   backend:
-    build: ../backend/
-    container_name: foodgram_backend
+    image: ebudaev/foodgram:v1
+    container_name: foodgram
     restart: always
     volumes:
       - static_value:/code/static/
@@ -22,7 +22,7 @@ services:
       - ./.env
 
   frontend:
-    build: ../frontend/
+    image: ebudaev/foodgram_frontend:v1
     container_name: foodgram_frontend
     volumes:
       - ../frontend/:/app/result_build/
