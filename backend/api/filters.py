@@ -5,7 +5,7 @@ from users.models import CustomUser as User
 
 
 class ProductSearchFilter(SearchFilter):
-    search_param = '^name'
+    search_param = 'name'
 
 
 class RecipeQueryParamFilter(FilterSet):
