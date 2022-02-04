@@ -65,7 +65,7 @@ class ProductViewSet(ReadOnlyModelViewSet):
     serializer_class = ProductSerializer
     filter_backends = (DjangoFilterBackend, )
     filterset_class = ProductSearchFilter
-    search_fields = ('name',)
+    search_fields = ('^name',)
     http_method_names = ('get',)
 
 
