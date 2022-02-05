@@ -18,7 +18,15 @@ from users.models import CustomUser
 
 
 class TagSerializer(serializers.ModelSerializer):
-    """Serializer Tag model for 'api/tags/' endpoint."""
+    """Serializer Tag model.
+    
+    Read from db for TagViewSet at 'api/tags/' endpoint with GET method.
+
+    
+    Write to db from RecipeViewSet via RecipeSerializer
+    at 'api/recipes/' with POST mthd:
+    get <id>s from RecipeSerializer, return db fields for this <id>s.
+    """
     id = serializers.IntegerField()
     name = serializers.CharField(max_length=200)
     color = serializers.CharField(max_length=7)
@@ -88,7 +96,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     """Serializer Recipe model for 'api/recipe/' endpoint."""
-    tags = TagSerializer(many=True)
     author = CustomUserSerializer(read_only=True)
     name = serializers.CharField(source='title')
     image = Base64ImageField(source='picture',
@@ -96,7 +103,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     ingredients = ComponentSerializer(
         many=True, read_only=True, source='recipe_components'
     )
-
+    tags = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
@@ -109,6 +116,17 @@ class RecipeSerializer(serializers.ModelSerializer):
             'is_in_shopping_cart',
             'name', 'image', 'text', 'cooking_time'
         )
+
+    def get_tags(self, obj):
+        method = None
+        request = self.context.get('request')
+        if request and hasattr(request, 'method'):
+            method = request.method
+        # read - json
+        if method == 'GET':
+            return TagSerializer(many=True)
+        # write - <id>s
+        return serializers.PrimaryKeyRelatedField()
 
     def get_user(self):
         user = None
