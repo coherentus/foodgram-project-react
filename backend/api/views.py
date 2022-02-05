@@ -80,7 +80,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     Allowed http methods/action:
     -list:      GET guest   POST auth-user
     -detail:    GET guest   PUT, DELETE auth-user
-    Extra-endpoints:
+    Extra-endpoints allowed only auth-user:
     /api/recipes/{id}/shopping_cart/        methods:    get, delete
     /api/recipes/download_shopping_cart/    methods:    get
     /api/recipes/{id}/favorite/             methods:    get, delete
@@ -108,7 +108,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.del_from_basket(request, pk)
         elif request.method == 'GET':
             return self.add_to_basket(request, pk)
-        return None
 
     def add_to_basket(self, request, pk=None):
         """Add recipe to bascket of current user.
@@ -266,7 +265,6 @@ class CustomUserViewSet(ListRetrieveDestroyViewSet):
             return self.add_follow(request, pk)
         elif request.method == 'DELETE':
             return self.del_follow(request, pk)
-        return None
 
     def add_follow(self, request, pk=None):
         """Create subscription from current user to author.
