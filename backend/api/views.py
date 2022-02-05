@@ -3,12 +3,11 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins, status, viewsets
+from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
-
 
 from logic.models import Bascket, FavourRecipe, Follow
 from recipes.models import Component, Product, Recipe, Tag
@@ -29,7 +28,7 @@ class ListRetrieveDestroyViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet
 ):
-    # CustomUserViewSet
+    # For CustomUserViewSet
     pass
 
 
@@ -63,9 +62,9 @@ class ProductViewSet(ReadOnlyModelViewSet):
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = (DjangoFilterBackend, )
-    filterset_class = ProductSearchFilter
-    search_fields = ('^name',)
+    # filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    # filterset_class = ProductSearchFilter
+    # search_fields = ('name',)
     http_method_names = ('get',)
 
 
