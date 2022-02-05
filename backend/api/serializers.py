@@ -126,7 +126,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         if method == 'GET':
             return TagSerializer(many=True)
         # write - <id>s
-        return serializers.PrimaryKeyRelatedField()
+        return serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     def get_user(self):
         user = None
