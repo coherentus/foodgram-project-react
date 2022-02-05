@@ -131,7 +131,26 @@ class RecipeSerializer(serializers.ModelSerializer):
             return obj.bascket_recipes.filter(user=user).exists()
         return False
     
-    def validate(self, data):
+    def validate_tags(self, data):
+        if not data:
+            raise serializers.ValidationError(
+                'Ошибка: Создание рецепта без тега невозможно'
+            )
+
+        if len(data) != len(set(data)):
+            raise serializers.ValidationError(
+                'Ошибка: Тег для рецепта указывается единожды'
+            )
+
+        for _id in data:
+            if not Tag.objects.filter(id=_id).exists():
+                raise serializers.ValidationError(
+                    f'Ошибка: Тега с указанным id = {_id} не существует'
+                )
+        print(data)
+        return data
+    
+    #def validate(self, data):
         """
         
         
