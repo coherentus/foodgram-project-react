@@ -122,10 +122,12 @@ class RecipeSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request and hasattr(request, 'method'):
             method = request.method
+        print(method)
         # read - json
         if method == 'GET':
             return TagSerializer(many=True)
         # write - <id>s
+        print(method)
         return serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     def get_user(self):
