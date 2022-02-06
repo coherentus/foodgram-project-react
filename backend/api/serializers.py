@@ -190,7 +190,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         if self.context.get('request').method == 'POST':
             author = self.context.get('request').user
             name = data.get('name')
-            if Recipe.objects.filter(author=author, name=name).exists():
+            if Recipe.objects.filter(author=author, title=name).exists():
                 raise serializers.ValidationError(
                     f'Ошибка: У автора - {author.username} уже есть рецепт '
                     f'с названием {name}'
