@@ -241,17 +241,30 @@ class CustomUserViewSet(ListRetrieveDestroyViewSet):
         detail=False, methods=('get', ),
         url_path='subscriptions', url_name='subscriptions',
         permission_classes=(IsAuthenticated, ),
-        pagination_class=PageLimitNumberPagination,
         serializer_class=SubscribeSerializer
     )
     def get_subscriptions(self, request):
         """Get and return current user's subscriptions."""
         user = request.user
         queryset = user.follower.all().prefetch_related('author__recipes')
+        pages = self.paginate_queryset(queryset)
         serializer = SubscribeSerializer(
-            queryset, many=True, context={'request': request}
+            pages, many=True, context={'request': request}
         )
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        #return Response(serializer.data, status=status.HTTP_200_OK)
+        return self.get_paginated_response(serializer.data)
+
+
+        """queryset = Follow.objects.filter(user=user)
+        pages = self.paginate_queryset(queryset)
+        
+        serializer = FollowSerializer(
+            pages,
+            many=True,
+            context={'request': request}
+        )
+        return self.get_paginated_response(serializer.data)"""
+
 
     @action(
         detail=True, methods=('get', 'delete'),
