@@ -232,14 +232,14 @@ class CustomUserViewSet(ListRetrieveDestroyViewSet):
     queryset = User.objects.all().prefetch_related('recipes')
     serializer_class = CustomUserSerializer
     #permission_classes = (IsAuthenticated, )
-    http_method_names = ('get', 'delete')
+    http_method_names = ('get', 'post', 'delete')
     lookup_field = 'pk'
     lookup_value_regex = '[0-9]'
 
     @action(
         detail=False, methods=('get', ),
         url_path='subscriptions', url_name='subscriptions',
-        permission_classes = (IsAuthenticated, ),
+        permission_classes=(IsAuthenticated, ),
         pagination_class=PageLimitNumberPagination,
         serializer_class=SubscribeSerializer
     )
@@ -256,7 +256,7 @@ class CustomUserViewSet(ListRetrieveDestroyViewSet):
         detail=True, methods=('get', 'delete'),
         url_path='subscribe',
         url_name='make_subscribe',
-        permission_classes = (IsAuthenticated, ),
+        permission_classes=(IsAuthenticated, ),
         serializer_class=SubscribeSerializer,
     )
     def add_del_sibscription(self, request, pk=None):
@@ -270,7 +270,7 @@ class CustomUserViewSet(ListRetrieveDestroyViewSet):
         """Create subscription from current user to author.
 
         Before add need check obj exist and exist in subscriptions.
-        """        
+        """
         author = get_object_or_404(User, pk=pk)
         user = request.user
         if user == author:
@@ -290,7 +290,7 @@ class CustomUserViewSet(ListRetrieveDestroyViewSet):
 
     def del_follow(self, request, pk=None):
         """Delete subscription from current user to author.
-        
+
         Before delete need check obj exist and exist in subscriptions.
         """
         user = request.user
