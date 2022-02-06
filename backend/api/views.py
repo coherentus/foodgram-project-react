@@ -62,7 +62,7 @@ class ProductViewSet(ReadOnlyModelViewSet):
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    #filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    # filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     #filterset_class = ProductSearchFilter
     #filterset_fields = ('name',)
     # search_fields = ('name',)
@@ -232,6 +232,7 @@ class CustomUserViewSet(ListRetrieveDestroyViewSet):
     queryset = User.objects.all().prefetch_related('recipes')
     serializer_class = CustomUserSerializer
     #permission_classes = (IsAuthenticated, )
+    pagination_class = PageLimitNumberPagination,
     http_method_names = ('get', 'post', 'delete')
     lookup_field = 'pk'
     lookup_value_regex = '[0-9]'
