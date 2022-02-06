@@ -246,7 +246,11 @@ class CustomUserViewSet(ListRetrieveDestroyViewSet):
     def get_subscriptions(self, request):
         """Get and return current user's subscriptions."""
         user = request.user
-        queryset = user.follower.all().prefetch_related('author__recipes')
+        queryset = (
+            Follow.objects.filter(user=user).prefetch_related(
+                'author__recipes'
+            )
+        )
         pages = self.paginate_queryset(queryset)
         serializer = SubscribeSerializer(
             pages, many=True, context={'request': request}
@@ -257,7 +261,7 @@ class CustomUserViewSet(ListRetrieveDestroyViewSet):
 
         """queryset = Follow.objects.filter(user=user)
         pages = self.paginate_queryset(queryset)
-        
+
         serializer = FollowSerializer(
             pages,
             many=True,
