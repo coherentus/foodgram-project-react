@@ -187,8 +187,8 @@ class RecipeSerializer(serializers.ModelSerializer):
             self.initial_data.get('tags')
         )
 
+        author = self.context.get('request').user
         if self.context.get('request').method == 'POST':
-            author = self.context.get('request').user
             name = data.get('name')
             if Recipe.objects.filter(author=author, title=name).exists():
                 raise serializers.ValidationError(
