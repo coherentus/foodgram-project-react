@@ -9,6 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from djoser.views import UserViewSet
+
 from logic.models import Bascket, FavourRecipe, Follow
 from recipes.models import Component, Product, Recipe, Tag
 from users.models import CustomUser as User
@@ -214,7 +216,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return response
 
 
-class CustomUserViewSet(ListRetrieveDestroyViewSet):
+class CustomUserViewSet(UserViewSet): # ListRetrieveDestroyViewSet
     """Endpoint '/api/users/' view.
 
     Permissions: depending on the point. Global or custom.
@@ -259,6 +261,19 @@ class CustomUserViewSet(ListRetrieveDestroyViewSet):
     def get_subscriptions(self, request):
         """Get and return current user's subscriptions."""
         user = request.user
+        queryset = Follow.objects.filter(user=user)
+        pages = self.paginate_queryset(queryset)
+        serializer = SubscribeSerializer(
+            pages,
+            many=True,
+            context={'request': request}
+        )
+        return self.get_paginated_response(serializer.data)
+        
+        
+        
+        
+        """user = request.user
         queryset = user.follower.all().prefetch_related('author__recipes')
         serializer = SubscribeSerializer(
             queryset, many=True, context={'request': request}
@@ -266,7 +281,7 @@ class CustomUserViewSet(ListRetrieveDestroyViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-        """queryset = Follow.objects.filter(user=user)
+        queryset = Follow.objects.filter(user=user)
         pages = self.paginate_queryset(queryset)
         
         serializer = FollowSerializer(
