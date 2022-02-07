@@ -102,7 +102,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
     @action(
-        detail=True, methods=('get', 'delete'),
+        detail=True, methods=('post', 'delete'),
         permission_classes=(IsAuthenticated,),
         url_path='shopping_cart', url_name='bascket',
         serializer_class=RecipeShowSerializer
@@ -110,7 +110,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk=None):
         if request.method == 'DELETE':
             return self.del_from_basket(request, pk)
-        elif request.method == 'GET':
+        elif request.method == 'POST':
             return self.add_to_basket(request, pk)
 
     def add_to_basket(self, request, pk=None):
@@ -143,12 +143,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         }, status=status.HTTP_400_BAD_REQUEST)
 
     @action(
-        detail=True, methods=('get', 'delete'),
+        detail=True, methods=('post', 'delete'),
         permission_classes=(IsAuthenticated,),
         url_path='favorite', url_name='favorite',
     )
     def add_del_favorite(self, request, pk=None):
-        if request.method == 'GET':
+        if request.method == 'POST':
             return self.add_to_favorite(request, pk)
         elif request.method == 'DELETE':
             return self.del_from_favorite(request, pk)
@@ -293,7 +293,7 @@ class CustomUserViewSet(UserViewSet): # ListRetrieveDestroyViewSet
 
 
     @action(
-        detail=True, methods=('get', 'delete'),
+        detail=True, methods=('post', 'delete'),
         url_path='subscribe',
         url_name='make_subscribe',
         permission_classes=(IsAuthenticated, ),
@@ -301,7 +301,7 @@ class CustomUserViewSet(UserViewSet): # ListRetrieveDestroyViewSet
     )
     def add_del_sibscription(self, request, pk=None):
         """Create or delete subscription from current user to author."""
-        if request.method == 'GET':
+        if request.method == 'POST':
             return self.add_follow(request, pk)
         elif request.method == 'DELETE':
             return self.del_follow(request, pk)
