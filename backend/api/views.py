@@ -68,6 +68,7 @@ class ProductViewSet(ReadOnlyModelViewSet):
     #filterset_fields = ('name',)
     # search_fields = ('name',)
     http_method_names = ('get',)
+    pagination_class = None
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
