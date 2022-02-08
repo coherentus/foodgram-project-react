@@ -241,12 +241,7 @@ class CustomUserViewSet(UserViewSet): # ListRetrieveDestroyViewSet
     lookup_field = 'pk'
     lookup_value_regex = '[0-9]'
 
-    """@action(
-        detail=False, methods=('get', ),
-        url_path='subscriptions', url_name='subscriptions',
-        permission_classes=(IsAuthenticated, ),
-        serializer_class=SubscribeSerializer
-    )
+    """
     def get_subscriptions(self, request):
         Get and return current user's subscriptions.
         user = request.user
@@ -258,6 +253,12 @@ class CustomUserViewSet(UserViewSet): # ListRetrieveDestroyViewSet
         #return Response(serializer.data, status=status.HTTP_200_OK)
         return self.get_paginated_response(serializer.data)"""
 
+    @action(
+        detail=False, methods=('get', ),
+        url_path='subscriptions', url_name='subscriptions',
+        permission_classes=(IsAuthenticated, ),
+        serializer_class=SubscribeSerializer
+    )
     def get_subscriptions(self, request):
         """Get and return current user's subscriptions."""
         user = request.user
