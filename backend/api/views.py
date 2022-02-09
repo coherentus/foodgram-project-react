@@ -236,7 +236,7 @@ class CustomUserViewSet(UserViewSet): # ListRetrieveDestroyViewSet
     queryset = User.objects.all().prefetch_related('recipes')
     serializer_class = CustomUserSerializer
     #permission_classes = (IsAuthenticated, )
-    pagination_class = PageLimitNumberPagination,
+    pagination_class = PageLimitNumberPagination
     http_method_names = ('get', 'post', 'delete')
     lookup_field = 'pk'
     lookup_value_regex = '[0-9]'
