@@ -208,7 +208,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         response['Content-Disposition'] = (
             'attachment; filename="shopping_list.txt"'
         )
-        response.write(['Список продуктов к покупке\n\n'])
+        response.write('Список продуктов к покупке\n\n')
         # response.writelines('\n\n')
         for component in bascket_components:
             response.writelines(
