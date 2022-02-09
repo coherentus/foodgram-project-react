@@ -69,6 +69,8 @@ class ProductViewSet(ReadOnlyModelViewSet):
     #filterset_class = ProductSearchFilter
     #filterset_fields = ('name',)
     # search_fields = ('name',)
+    filter_backends = (ProductSearchFilter,)
+    search_fields = ('^name',)
     http_method_names = ('get',)
     pagination_class = None
 
