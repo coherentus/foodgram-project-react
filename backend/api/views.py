@@ -211,7 +211,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         response.write('Список продуктов к покупке\n\n')
         # response.writelines('\n\n')
         for component in bascket_components:
-            response.writelines(
+            response.write(
                 f'* {component["product__name"]} - '
                 f'{component["amount"]} '
                 f'{component["product__measurement_unit"]} \n'
