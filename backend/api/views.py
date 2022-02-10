@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, mixins, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -22,16 +22,6 @@ from .serializers import (CustomUserSerializer, ProductSerializer,
                           RecipeSerializer, RecipeShowSerializer,
                           SubscribeSerializer,
                           TagSerializer)
-
-
-class ListRetrieveDestroyViewSet(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet
-):
-    # For CustomUserViewSet
-    pass
 
 
 class TagViewSet(ReadOnlyModelViewSet):
@@ -65,10 +55,6 @@ class ProductViewSet(ReadOnlyModelViewSet):
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    # filter_backends = (DjangoFilterBackend, filters.SearchFilter)
-    #filterset_class = ProductSearchFilter
-    #filterset_fields = ('name',)
-    # search_fields = ('name',)
     filter_backends = (ProductSearchFilter,)
     search_fields = ('^name',)
     http_method_names = ('get',)
@@ -85,7 +71,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     Filter fields: author, tags.slug, is_in_shoping_cart, is_favorited
     Allowed http methods/action:
     -list:      GET guest   POST auth-user
-    -detail:    GET guest   PUT, DELETE auth-user
+    -detail:    GET guest   PATH, DELETE auth-user
     Extra-endpoints allowed only auth-user:
     /api/recipes/{id}/shopping_cart/        methods:    get, delete
     /api/recipes/download_shopping_cart/    methods:    get
@@ -218,7 +204,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return response
 
 
-class CustomUserViewSet(UserViewSet): # ListRetrieveDestroyViewSet
+class CustomUserViewSet(UserViewSet):
     """Endpoint '/api/users/' view.
 
     Permissions: depending on the point. Global or custom.
@@ -230,30 +216,17 @@ class CustomUserViewSet(UserViewSet): # ListRetrieveDestroyViewSet
     url_path                    methods         url_name
     /api/users/subscriptions/   GET  -list      'subscriptions' auth-user
     need pagination
-    /api/users/{id}/subscribe/  GET  -detail    'make_subscribe' auth-user
+    /api/users/{id}/subscribe/  POST  -detail    'make_subscribe' auth-user
     need check self-follow, exist-follow
     /api/users/{id}/subscribe/  DELETE -detail  'del_subscribe' auth-user
     need check exist-follow
     """
     queryset = User.objects.all().prefetch_related('recipes')
     serializer_class = CustomUserSerializer
-    #permission_classes = (IsAuthenticated, )
     pagination_class = PageLimitNumberPagination
     http_method_names = ('get', 'post', 'delete')
     lookup_field = 'pk'
     lookup_value_regex = '[0-9]'
-
-    """
-    def get_subscriptions(self, request):
-        Get and return current user's subscriptions.
-        user = request.user
-        queryset = user.follower.all().prefetch_related('author__recipes')
-        pages = self.paginate_queryset(queryset)
-        serializer = SubscribeSerializer(
-            pages, many=True, context={'request': request}
-        )
-        #return Response(serializer.data, status=status.HTTP_200_OK)
-        return self.get_paginated_response(serializer.data)"""
 
     @action(
         detail=False, methods=('get', ),
@@ -272,27 +245,6 @@ class CustomUserViewSet(UserViewSet): # ListRetrieveDestroyViewSet
             context={'request': request}
         )
         return self.get_paginated_response(serializer.data)
-
-
-
-        """user = request.user
-        queryset = user.follower.all().prefetch_related('author__recipes')
-        serializer = SubscribeSerializer(
-            queryset, many=True, context={'request': request}
-        )
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-        queryset = Follow.objects.filter(user=user)
-        pages = self.paginate_queryset(queryset)
-
-        serializer = FollowSerializer(
-            pages,
-            many=True,
-            context={'request': request}
-        )
-        return self.get_paginated_response(serializer.data)"""
-
 
     @action(
         detail=True, methods=('post', 'delete'),
