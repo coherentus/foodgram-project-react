@@ -214,12 +214,12 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, recipe, validated_data):
-        ingredients = validated_data.pop('ingredients')
+        components = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         with transaction.atomic():
             recipe = super().update(recipe, validated_data)
-            recipe.ingredients.clear()
-            self.create_recipe_ingredients(ingredients, recipe)
+            recipe.components.clear()
+            self.create_recipe_components(components, recipe)
             recipe.tags.set(tags)
         return recipe
 
