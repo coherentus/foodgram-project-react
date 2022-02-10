@@ -1,0 +1,23 @@
+/api/tags/                      guest       OK
+/api/tags/{id}/                 guest       OK
+
+/api/ingredients/               guest       OK
+/api/ingredients/{id}/          guest       OK
+
+/api/recipes/                   guest
+/api/recipes/{id}/              guest
+
+/api/recipes/download_shopping_cart/    auth-user
+/api/recipes/{id}/shopping_cart/        auth-user
+/api/recipes/{id}/favorite/             auth-user
+
+/api/users/                     guest
+/api/users/{id}/                auth-user
+/api/users/me/                  auth-user
+/api/users/set_password/        auth-user
+
+/api/users/subscriptions/       auth-user
+/api/users/{id}/subscribe/      auth-user
+
+/api/auth/token/login/          guest
+/api/auth/token/logout/         auth-user
