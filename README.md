@@ -19,3 +19,35 @@
     В папке ```backend``` есть для этого заготовка ```.env.txt```
 
 Запуск всей совокупности контейнеров проекта осуществляется из папки **infra** командой ```sudo docker-compose up -d```
+
+Для свежесозданного репозитория после первого запуска следующие действия
+
+* **Необходимы**
+
+    Инициализация БД. В терминах Django - применить миграции:
+
+    ```bash
+    sudo docker-compose exec backend python manage.py migrate
+    ```
+
+    Ссоздание суперпользователя:
+
+    ```bash
+    sudo docker-compose exec backend python manage.py createsuperuser
+    ```
+
+* **Необязательны, но полезны**
+
+
+    Загрузка ингредиентов:
+
+    ```bash
+    sudo docker-compose exec backend python manage.py load_data
+    ```
+
+    Сборка статики:
+
+    ```bash
+    sudo docker-compose exec backend python manage.py collectstatic
+    ```
+
