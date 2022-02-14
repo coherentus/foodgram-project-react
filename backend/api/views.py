@@ -88,18 +88,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    @action(
-        detail=True, methods=('post', 'delete'),
-        permission_classes=(IsAuthenticated,),
-        url_path='shopping_cart', url_name='basket',
-        serializer_class=RecipeShowSerializer
-    )
-    def shopping_cart(self, request, pk=None):
-        if request.method == 'DELETE':
-            return self.del_recipe(request, Basket, pk)
-        elif request.method == 'POST':
-            return self.add_recipe(request, Basket, pk)
-
     def add_recipe(self, request, model, pk=None):
         """Add recipe into favorites or basket of current user.
 
@@ -128,8 +116,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response({
             'errors': 'Ошибка. Попытка удаления несуществующего рецепта.'
         }, status=status.HTTP_400_BAD_REQUEST)
-    
 
+    @action(
+        detail=True, methods=('post', 'delete'),
+        permission_classes=(IsAuthenticated,),
+        url_path='shopping_cart', url_name='basket',
+        serializer_class=RecipeShowSerializer
+    )
+    def shopping_cart(self, request, pk=None):
+        if request.method == 'DELETE':
+            return self.del_recipe(request, Basket, pk)
+        elif request.method == 'POST':
+            return self.add_recipe(request, Basket, pk)
+        return None
 
     @action(
         detail=True, methods=('post', 'delete'),
@@ -142,8 +141,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         elif request.method == 'DELETE':
             return self.del_recipe(request, FavourRecipe, pk)
         return None
-
-    
 
     @action(
         detail=False, methods=('get',),
