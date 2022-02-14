@@ -91,7 +91,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=True, methods=('post', 'delete'),
         permission_classes=(IsAuthenticated,),
-        url_path='shopping_cart', url_name='bascket',
+        url_path='shopping_cart', url_name='basket',
         serializer_class=RecipeShowSerializer
     )
     def shopping_cart(self, request, pk=None):
@@ -101,9 +101,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.add_to_basket(request, pk)
 
     def add_to_basket(self, request, pk=None):
-        """Add recipe to bascket of current user.
+        """Add recipe to basket of current user.
 
-        Before add need check obj exist and exist in bascket.
+        Before add need check obj exist and exist in basket.
         """
         user = request.user
         if Basket.objects.filter(user=user, recipe__id=pk).exists():
@@ -116,9 +116,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def del_from_basket(self, request, pk=None):
-        """Delete recipe from bascket of current user.
+        """Delete recipe from basket of current user.
 
-        Before delete need check obj exist and exist in bascket.
+        Before delete need check obj exist and exist in basket.
         """
         user = request.user
         obj = Basket.objects.filter(user=user, recipe__id=pk)
@@ -173,18 +173,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=False, methods=('get',),
         permission_classes=(IsAuthenticated,),
-        url_path='download_shopping_cart', url_name='txt_bascket',
+        url_path='download_shopping_cart', url_name='txt_basket',
     )
     def download_text_file(self, request):
-        """Make and response txt-file from current user's bascket."""
+        """Make and response txt-file from current user's basket."""
         user = request.user
-        if not user.bascket.exists():
+        if not user.basket.exists():
             return Response({
                 'errors': 'Ошибка. Попытка получения пустого списка покупок.'
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        bascket_components = Component.objects.filter(
-            recipe__bascket_recipes__user=user).values(
+        basket_components = Component.objects.filter(
+            recipe__basket_recipes__user=user).values(
                 'product__name',
                 'product__measurement_unit'
             ).annotate(amount=Sum('amount')).order_by('product__name')
@@ -194,7 +194,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'attachment; filename="shopping_list.txt"'
         )
         response.write('Список продуктов к покупке\r\n\r\n')
-        for component in bascket_components:
+        for component in basket_components:
             response.write(
                 f'* {component["product__name"]} - '
                 f'{component["amount"]} '
