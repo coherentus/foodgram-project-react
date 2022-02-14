@@ -168,15 +168,15 @@ class RecipeSerializer(serializers.ModelSerializer):
                 )
         return data
 
+    def validate_cooking_time(self, value):
+        if not isinstance(value, int) or value < 1:
+            raise serializers.ValidationError(
+                'Ошибка: Минимальное значение времени приготовления '
+                '1 минута'
+            )
+        return value
+
     def validate(self, data):
-        data['ingredients'] = self.validate_ingredients(
-            self.initial_data.get('ingredients')
-        )
-
-        data['tags'] = self.validate_tags(
-            self.initial_data.get('tags')
-        )
-
         author = self.context.get('request').user
         if self.context.get('request').method == 'POST':
             name = data.get('name')
@@ -186,13 +186,6 @@ class RecipeSerializer(serializers.ModelSerializer):
                     f'с названием {name}'
                 )
         data['author'] = author
-
-        cooking_time = data.get('cooking_time')
-        if not isinstance(cooking_time, int) or cooking_time <= 0:
-            raise serializers.ValidationError(
-                'Ошибка: Минимальное значение времени приготовления '
-                '1 минута'
-            )
         return data
 
     def create_recipe_components(self, ingredients, recipe):
