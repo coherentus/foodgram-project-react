@@ -96,38 +96,40 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def shopping_cart(self, request, pk=None):
         if request.method == 'DELETE':
-            return self.del_from_basket(request, pk)
+            return self.del_recipe(request, Basket, pk)
         elif request.method == 'POST':
-            return self.add_to_basket(request, pk)
+            return self.add_recipe(request, Basket, pk)
 
-    def add_to_basket(self, request, pk=None):
-        """Add recipe to basket of current user.
+    def add_recipe(self, request, model, pk=None):
+        """Add recipe into favorites or basket of current user.
 
-        Before add need check obj exist and exist in basket.
+        Before add need check obj exist and exist in db.
         """
         user = request.user
-        if Basket.objects.filter(user=user, recipe__id=pk).exists():
+        if model.objects.filter(user=user, recipe__id=pk).exists():
             return Response({
                 'errors': 'Ошибка. Попытка повторного добавления рецепта.'
             }, status=status.HTTP_400_BAD_REQUEST)
         recipe = get_object_or_404(Recipe, id=pk)
-        Basket.objects.create(user=user, recipe=recipe)
+        model.objects.create(user=user, recipe=recipe)
         serializer = RecipeShowSerializer(recipe)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def del_from_basket(self, request, pk=None):
-        """Delete recipe from basket of current user.
+    def del_recipe(self, request, model, pk=None):
+        """Delete recipe from favorites or basket of current user.
 
-        Before delete need check obj exist and exist in basket.
+        Before delete need check obj exist and exist in db.
         """
         user = request.user
-        obj = Basket.objects.filter(user=user, recipe__id=pk)
+        obj = model.objects.filter(user=user, recipe__id=pk)
         if obj.exists():
             obj.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response({
             'errors': 'Ошибка. Попытка удаления несуществующего рецепта.'
         }, status=status.HTTP_400_BAD_REQUEST)
+    
+
 
     @action(
         detail=True, methods=('post', 'delete'),
@@ -136,39 +138,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def add_del_favorite(self, request, pk=None):
         if request.method == 'POST':
-            return self.add_to_favorite(request, pk)
+            return self.add_recipe(request, FavourRecipe, pk)
         elif request.method == 'DELETE':
-            return self.del_from_favorite(request, pk)
+            return self.del_recipe(request, FavourRecipe, pk)
         return None
 
-    def add_to_favorite(self, request, pk=None):
-        """Add recipe into favorites of current user.
-
-        Before add need check obj exist and exist in favorites.
-        """
-        user = request.user
-        if FavourRecipe.objects.filter(user=user, recipe__id=pk).exists():
-            return Response({
-                'errors': 'Ошибка. Попытка повторного добавления рецепта.'
-            }, status=status.HTTP_400_BAD_REQUEST)
-        recipe = get_object_or_404(Recipe, id=pk)
-        FavourRecipe.objects.create(user=user, recipe=recipe)
-        serializer = RecipeShowSerializer(recipe)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def del_from_favorite(self, request, pk=None):
-        """Delete recipe from favorites of current user.
-
-        Before delete need check obj exist and exist in favorites.
-        """
-        user = request.user
-        obj = FavourRecipe.objects.filter(user=user, recipe__id=pk)
-        if obj.exists():
-            obj.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response({
-            'errors': 'Ошибка. Попытка удаления несуществующего рецепта.'
-        }, status=status.HTTP_400_BAD_REQUEST)
+    
 
     @action(
         detail=False, methods=('get',),
