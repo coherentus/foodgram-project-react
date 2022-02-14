@@ -164,7 +164,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             if int(amount) <= 0:
                 raise serializers.ValidationError(
                     'Ошибка: Минимальное значение количества '
-                    'ингредиента - 1'
+                    'ингредиента: 1'
                 )
         return data
 
@@ -197,7 +197,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             )
 
     def create(self, validated_data):
-        components = validated_data.pop('ingredients')
+        components = validated_data.pop('recipe_components')
         tags = validated_data.pop('tags')
         with transaction.atomic():
             recipe = Recipe.objects.create(**validated_data)
@@ -206,7 +206,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, recipe, validated_data):
-        components = validated_data.pop('ingredients')
+        components = validated_data.pop('recipe_components')
         tags = validated_data.pop('tags')
         with transaction.atomic():
             recipe = super().update(recipe, validated_data)
