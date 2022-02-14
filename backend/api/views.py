@@ -3,13 +3,12 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from django_filters.rest_framework import DjangoFilterBackend
+from djoser.views import UserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
-
-from djoser.views import UserViewSet
 
 from logic.models import Bascket, FavourRecipe, Follow
 from recipes.models import Component, Product, Recipe, Tag
@@ -18,10 +17,10 @@ from users.models import CustomUser as User
 from .filters import ProductSearchFilter, RecipeQueryParamFilter
 from .paginations import PageLimitNumberPagination
 from .permissions import AuthorOrReadOnly
-from .serializers import (CustomUserSerializer, ProductSerializer,
-                          RecipeSerializer, RecipeShowSerializer,
-                          SubscribeSerializer,
-                          TagSerializer)
+from .serializers import (
+    CustomUserSerializer, ProductSerializer, RecipeSerializer,
+    RecipeShowSerializer, SubscribeSerializer, TagSerializer,
+)
 
 
 class TagViewSet(ReadOnlyModelViewSet):
