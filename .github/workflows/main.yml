@@ -21,7 +21,8 @@ jobs:
         pip install -r backend/requirements.txt
     - name: Test with flake8 
       run: |
-        python -m flake8 --per-file-ignores='./api/views.py:R503 ./api_yamdb/settings.py:E501'
+        python -m flake8
+        # --per-file-ignores='./api/views.py:R503 ./api_yamdb/settings.py:E501'
 
   build_and_push_to_docker_hub:
     name: Push Docker image to Docker Hub
