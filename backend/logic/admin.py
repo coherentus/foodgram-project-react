@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Bascket, FavourRecipe, Follow
+from .models import Basket, FavourRecipe, Follow
 
 
-@admin.register(Bascket)
-class BascketAdmin(admin.ModelAdmin):
+@admin.register(Basket)
+class BasketAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipes_count')
     list_display_links = ('user', )
     list_filter = ('user', )

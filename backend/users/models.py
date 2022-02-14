@@ -16,7 +16,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     В качестве логина используется поле email.
     Сортировка по умолчанию - по id.
     Related_names:
-    'bascket'           from logic.Bascket
+    'basket'            from logic.Basket
     'follower'          from logic.Follow
     'following'         from logic.Follow
     'favour_recipes'    from logic.FavourRecipe

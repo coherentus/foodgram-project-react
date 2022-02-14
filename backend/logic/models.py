@@ -5,7 +5,7 @@ from recipes.models import Recipe
 from users.models import CustomUser as User
 
 
-class Bascket(models.Model):
+class Basket(models.Model):
     """Корзина пользователя.
 
     Поля:
@@ -14,12 +14,12 @@ class Bascket(models.Model):
     """
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,
-        related_name='bascket',
+        related_name='basket',
         verbose_name='Корзина покупок'
     )
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE,
-        related_name='bascket_recipes',
+        related_name='basket_recipes',
         verbose_name='Рецепты в списке покупок'
     )
 
@@ -38,7 +38,7 @@ class Bascket(models.Model):
     )
     def recipes_count(self):
         """Вернуть количество рецептов в списке покупок пользователя."""
-        return self.user.bascket.count()
+        return self.user.basket.count()
 
 
 class Follow(models.Model):

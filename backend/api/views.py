@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from logic.models import Bascket, FavourRecipe, Follow
+from logic.models import Basket, FavourRecipe, Follow
 from recipes.models import Component, Product, Recipe, Tag
 from users.models import CustomUser as User
 
@@ -106,12 +106,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         Before add need check obj exist and exist in bascket.
         """
         user = request.user
-        if Bascket.objects.filter(user=user, recipe__id=pk).exists():
+        if Basket.objects.filter(user=user, recipe__id=pk).exists():
             return Response({
                 'errors': 'Ошибка. Попытка повторного добавления рецепта.'
             }, status=status.HTTP_400_BAD_REQUEST)
         recipe = get_object_or_404(Recipe, id=pk)
-        Bascket.objects.create(user=user, recipe=recipe)
+        Basket.objects.create(user=user, recipe=recipe)
         serializer = RecipeShowSerializer(recipe)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -121,7 +121,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         Before delete need check obj exist and exist in bascket.
         """
         user = request.user
-        obj = Bascket.objects.filter(user=user, recipe__id=pk)
+        obj = Basket.objects.filter(user=user, recipe__id=pk)
         if obj.exists():
             obj.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)

@@ -38,9 +38,9 @@ class RecipeQueryParamFilter(FilterSet):
         return queryset
 
     def get_is_in_shopping_cart(self, queryset, name, value):
-        """Make qs of current user's bascket if value True/1."""
+        """Make qs of current user's basket if value True/1."""
         if value and not self.request.user.is_anonymous:
             return queryset.filter(
-                bascket_recipes__user=self.request.user
+                basket_recipes__user=self.request.user
             ).prefetch_related('components')
         return queryset

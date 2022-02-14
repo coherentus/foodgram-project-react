@@ -142,7 +142,7 @@ class Recipe(models.Model):
     cooking_time - Время на приготовление в минутах.
     pub_date - Дата публикации.
     Related_names:
-    'bascket_recipes'       from logic.Bascket
+    'basket_recipes'        from logic.Basket
     'favourite'             from logic.FavourRecipe
     'recipe_ingredients'    from recipes.Component
     """
