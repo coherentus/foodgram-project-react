@@ -177,6 +177,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
+        data['ingredients'] = self.initial_data.get('ingredients')
+        data['tags'] = self.initial_data.get('tags')
+
         author = self.context.get('request').user
         if self.context.get('request').method == 'POST':
             name = data.get('name')
@@ -197,7 +200,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             )
 
     def create(self, validated_data):
-        components = validated_data.pop('components')
+        components = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         with transaction.atomic():
             recipe = Recipe.objects.create(**validated_data)
@@ -206,7 +209,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, recipe, validated_data):
-        components = validated_data.pop('components')
+        components = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         with transaction.atomic():
             recipe = super().update(recipe, validated_data)
