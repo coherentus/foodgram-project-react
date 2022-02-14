@@ -156,10 +156,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         basket_components = Component.objects.filter(
-            recipe__basket_recipes__user=user).values(
-                'product__name',
-                'product__measurement_unit'
-            ).annotate(amount=Sum('amount')).order_by('product__name')
+            recipe__basket_recipes__user=user
+        ).values(
+            'product__name',
+            'product__measurement_unit'
+        ).annotate(amount=Sum('amount')).order_by('product__name')
 
         response = HttpResponse(content_type='text/plain')
         response['Content-Disposition'] = (
@@ -230,6 +231,7 @@ class CustomUserViewSet(UserViewSet):
             return self.add_follow(request, pk)
         elif request.method == 'DELETE':
             return self.del_follow(request, pk)
+        return None
 
     def add_follow(self, request, pk=None):
         """Create subscription from current user to author.
