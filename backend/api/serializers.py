@@ -141,12 +141,13 @@ class RecipeSerializer(serializers.ModelSerializer):
         return data
 
     def validate_ingredients(self, data):
-        if not data:
+        ingredients = self.initial_data.get('ingredients')
+        if not ingredients:
             raise serializers.ValidationError(
                 'Ошибка: Невозможно создание рецепта без ингредиента'
             )
 
-        ingr_ids = [component['id'] for component in data]
+        ingr_ids = [component['id'] for component in ingredients]
         if len(ingr_ids) != len(set(ingr_ids)):
             raise serializers.ValidationError(
                 'Ошибка: Ингредиент для рецепта указывается единожды'
@@ -158,13 +159,14 @@ class RecipeSerializer(serializers.ModelSerializer):
                     f'с указанным id = {ingrdnt_id} не существует'
                 )
 
-        amounts = [item['amount'] for item in data]
+        amounts = [item['amount'] for item in ingredients]
         for amount in amounts:
             if not isinstance(amount, int) or amount < 1:
                 raise serializers.ValidationError(
                     'Ошибка: Минимальное значение количества '
                     'ингредиента: 1'
                 )
+        data['ingredients'] = ingredients
         return data
 
     def validate_cooking_time(self, value):
