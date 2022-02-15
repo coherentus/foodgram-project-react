@@ -83,8 +83,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     http_method_names = ('get', 'post', 'put', 'patch', 'delete', )
 
-    """def perform_create(self, serializer):
-        serializer.save(author=self.request.user)"""
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
     def add_recipe(self, request, model, pk=None):
         """Add recipe into favorites or basket of current user.
