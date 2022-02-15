@@ -215,8 +215,8 @@ class RecipeSerializer(serializers.ModelSerializer):
     def update(self, recipe, validated_data):
         if not self.is_valid():
             raise serializers.ValidationError('Данные не валидны')
-        tags = validated_data.pop('tags')
-        components = validated_data.pop('ingredients')
+        tags = self.validated_data.pop('tags')
+        components = self.validated_data.pop('ingredients')
         # tags = self.initial_data.get('tags')
         # components = self.initial_data.get('ingredients')
         with transaction.atomic():
