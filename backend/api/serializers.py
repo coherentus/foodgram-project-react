@@ -178,9 +178,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
-        # data['ingredients'] = self.initial_data.get('ingredients')
-        # data['tags'] = self.initial_data.get('tags')
-
         author = self.context.get('request').user
         if self.context.get('request').method == 'POST':
             name = data.get('name')
