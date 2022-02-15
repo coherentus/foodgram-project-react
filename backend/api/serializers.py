@@ -122,7 +122,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             return obj.basket_recipes.filter(user=user).exists()
         return False
 
-    """def validate_tags(self, data):
+    def validate_tags(self, data):
         if not data:
             raise serializers.ValidationError(
                 'Ошибка: Создание рецепта без тега невозможно'
@@ -167,7 +167,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                     'ингредиента: 1'
                 )
         data['ingredients'] = ingredients
-        return data"""
+        return data
 
     def validate_cooking_time(self, value):
         if not isinstance(value, int) or value < 1:
@@ -178,6 +178,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
+        if not self.is_valid():
+            raise serializers.ValidationError('Данные не валидны')
         author = self.context.get('request').user
         if self.context.get('request').method == 'POST':
             name = data.get('name')
@@ -199,8 +201,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def create(self, validated_data):
-        if not self.is_valid():
-            raise KeyError('Данные не валидны')
         components = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         
@@ -220,6 +220,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             recipe = super().update(recipe, validated_data)
             recipe.components.clear()
+            recipe.tags.clear()
             self.create_recipe_components(components, recipe)
             recipe.tags.set(tags)
         return recipe
