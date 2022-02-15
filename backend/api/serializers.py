@@ -189,12 +189,11 @@ class RecipeSerializer(serializers.ModelSerializer):
         data['author'] = author
         
         # tags
-        self.is_valid()
         tags_initial = data.get('tags')
         if not tags_initial:
             raise serializers.ValidationError(
                 'Ошибка: Создание рецепта без тега невозможно'
-                f'{data}'
+                #f'{data}'
                 '\n\r\n'
                 f'{self.initial_data}'
                 '\n\r\n'
