@@ -178,8 +178,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
-        if not self.is_valid():
-            raise serializers.ValidationError('Данные не валидны')
         author = self.context.get('request').user
         if self.context.get('request').method == 'POST':
             name = data.get('name')
@@ -201,6 +199,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def create(self, validated_data):
+        if not self.is_valid():
+            raise serializers.ValidationError('Данные не валидны')
         components = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         
@@ -213,6 +213,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, recipe, validated_data):
+        if not self.is_valid():
+            raise serializers.ValidationError('Данные не валидны')
         tags = validated_data.pop('tags')
         components = validated_data.pop('ingredients')
         # tags = self.initial_data.get('tags')
