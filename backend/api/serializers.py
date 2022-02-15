@@ -203,7 +203,6 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         tags = self.initial_data.get('tags')
-         # = validated_data.pop('ingredients')
         components = self.initial_data.get('ingredients')
         with transaction.atomic():
             recipe = Recipe.objects.create(**validated_data)
@@ -212,8 +211,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, recipe, validated_data):
-        components = validated_data.pop('ingredients')
-        tags = validated_data.pop('tags')
+        tags = self.initial_data.get('tags')
+        components = self.initial_data.get('ingredients')
         with transaction.atomic():
             recipe = super().update(recipe, validated_data)
             recipe.components.clear()
