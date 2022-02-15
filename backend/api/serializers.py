@@ -1,5 +1,4 @@
 from django.db import transaction
-
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
@@ -134,10 +133,10 @@ class RecipeSerializer(serializers.ModelSerializer):
                 'Ошибка: Тег для рецепта указывается единожды'
             )
 
-        for id in data:
-            if not Tag.objects.filter(id=id).exists():
+        for tag_id in data:
+            if not Tag.objects.filter(id=tag_id).exists():
                 raise serializers.ValidationError(
-                    f'Ошибка: Тега с указанным id = {id} не существует'
+                    f'Ошибка: Тега с указанным id = {tag_id} не существует'
                 )
         return data
 
@@ -152,16 +151,16 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Ошибка: Ингредиент для рецепта указывается единожды'
             )
-        for id in ingr_ids:
-            if not Product.objects.filter(id=id).exists():
+        for ingrdnt_id in ingr_ids:
+            if not Product.objects.filter(id=ingrdnt_id).exists():
                 raise serializers.ValidationError(
                     'Ошибка: Ингредиента '
-                    f'с указанным id = {id} не существует'
+                    f'с указанным id = {ingrdnt_id} не существует'
                 )
 
         amounts = [item['amount'] for item in data]
         for amount in amounts:
-            if int(amount) <= 0:
+            if not isinstance(amount, int) or amount < 1:
                 raise serializers.ValidationError(
                     'Ошибка: Минимальное значение количества '
                     'ингредиента: 1'

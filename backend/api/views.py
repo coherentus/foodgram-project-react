@@ -1,7 +1,6 @@
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import status, viewsets
@@ -13,7 +12,6 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from logic.models import Basket, FavourRecipe, Follow
 from recipes.models import Component, Product, Recipe, Tag
 from users.models import CustomUser as User
-
 from .filters import ProductSearchFilter, RecipeQueryParamFilter
 from .paginations import PageLimitNumberPagination
 from .permissions import AuthorOrReadOnly
