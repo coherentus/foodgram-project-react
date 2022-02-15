@@ -87,7 +87,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         max_length=None, use_url=True
     )
     ingredients = ComponentSerializer(
-        many=True, read_only=True, source='components'
+        many=True, read_only=True, source='recipe_components'
     )
     tags = TagSerializer(read_only=True, many=True)
     is_favorited = serializers.SerializerMethodField()
