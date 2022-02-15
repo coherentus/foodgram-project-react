@@ -39,7 +39,7 @@ class ComponentSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.ReadOnlyField(
         source='product.measurement_unit'
     )
-    # amount = serializers.IntegerField()
+    amount = serializers.IntegerField()
 
     class Meta:
 
