@@ -138,6 +138,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError(
             'Ошибка: Создание рецепта без тега невозможно'
         )"""
+        return data
 
     def validate_ingredients(self, data):
         ingredients = self.initial_data.get('ingredients')
