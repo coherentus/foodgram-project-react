@@ -123,7 +123,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return False
 
     def validate_tags(self, data):
-        if data:
+        """if data:
             if len(data) != len(set(data)):
                 raise serializers.ValidationError(
                     'Ошибка: Тег для рецепта указывается единожды'
@@ -137,7 +137,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             return data
         raise serializers.ValidationError(
             'Ошибка: Создание рецепта без тега невозможно'
-        )
+        )"""
 
     def validate_ingredients(self, data):
         ingredients = self.initial_data.get('ingredients')
