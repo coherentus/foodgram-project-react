@@ -87,7 +87,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         max_length=None, use_url=True
     )
     ingredients = ComponentSerializer(
-        many=True, read_only=True, source='recipe__components'
+        many=True, read_only=True, source='components'
     )
     tags = TagSerializer(read_only=True, many=True)
     is_favorited = serializers.SerializerMethodField()
@@ -122,7 +122,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             return obj.basket_recipes.filter(user=user).exists()
         return False
 
-    """def validate_tags(self, data):
+    def validate_tags(self, data):
         if not data:
             raise serializers.ValidationError(
                 'Ошибка: Создание рецепта без тега невозможно'
@@ -138,7 +138,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     f'Ошибка: Тега с указанным id = {tag_id} не существует'
                 )
-        return data"""
+        return data
 
     def validate_ingredients(self, data):
         ingredients = self.initial_data.get('ingredients')
