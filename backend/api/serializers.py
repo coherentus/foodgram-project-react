@@ -122,28 +122,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             return obj.basket_recipes.filter(user=user).exists()
         return False
 
-    """def validate_tags(self, data):
-        if data:
-            if len(data) != len(set(data)):
-                raise serializers.ValidationError(
-                    'Ошибка: Тег для рецепта указывается единожды'
-                )
-
-            for tag_id in data:
-                if not Tag.objects.filter(id=tag_id).exists():
-                    raise serializers.ValidationError(
-                        f'Ошибка: Тега с указанным id = {tag_id} не существует'
-                    )
-            return data
-        raise serializers.ValidationError(
-            'Ошибка: Создание рецепта без тега невозможно'
-        )
-        return data
-
-    def validate_ingredients(self, data):
-
-        return data"""
-
     def validate_cooking_time(self, value):
         if not isinstance(value, int) or value < 1:
             raise serializers.ValidationError(
@@ -225,9 +203,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Данные не валидны')
         components = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-
-        # tags = self.initial_data.get('tags')
-        # components = self.initial_data.get('ingredients')
         with transaction.atomic():
             recipe = Recipe.objects.create(**validated_data)
             self.create_recipe_components(components, recipe)
@@ -239,8 +214,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Данные не валидны')
         tags = self.validated_data.pop('tags')
         components = self.validated_data.pop('ingredients')
-        # tags = self.initial_data.get('tags')
-        # components = self.initial_data.get('ingredients')
         with transaction.atomic():
             recipe = super().update(recipe, validated_data)
             recipe.components.clear()
