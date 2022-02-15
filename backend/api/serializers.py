@@ -189,6 +189,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         data['author'] = author
         
         # tags
+        self.is_valid()
         tags_initial = data.get('tags')
         if not tags_initial:
             raise serializers.ValidationError(
