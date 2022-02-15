@@ -141,6 +141,47 @@ class RecipeSerializer(serializers.ModelSerializer):
         return data
 
     def validate_ingredients(self, data):
+
+        return data"""
+
+    def validate_cooking_time(self, value):
+        if not isinstance(value, int) or value < 1:
+            raise serializers.ValidationError(
+                'Ошибка: Минимальное значение времени приготовления '
+                '1 минута'
+            )
+        return value
+
+    def validate(self, data):
+        author = self.context.get('request').user
+        if self.context.get('request').method == 'POST':
+            name = data.get('name')
+            if Recipe.objects.filter(author=author, title=name).exists():
+                raise serializers.ValidationError(
+                    f'Ошибка: У автора - {author.username} уже есть рецепт '
+                    f'с названием {name}'
+                )
+        data['author'] = author
+
+        # tags
+        tags_initial = self.initial_data.get('tags')
+        if not tags_initial:
+            raise serializers.ValidationError(
+                'Ошибка: Создание рецепта без тега невозможно'
+            )
+        if len(tags_initial) != len(set(tags_initial)):
+            raise serializers.ValidationError(
+                'Ошибка: Тег для рецепта указывается единожды'
+            )
+
+        for tag_id in tags_initial:
+            if not Tag.objects.filter(id=tag_id).exists():
+                raise serializers.ValidationError(
+                    f'Ошибка: Тега с указанным id = {tag_id} не существует'
+                )
+        data['tags'] = tags_initial
+
+        # ingredients
         ingredients = self.initial_data.get('ingredients')
         if not ingredients:
             raise serializers.ValidationError(
@@ -167,53 +208,8 @@ class RecipeSerializer(serializers.ModelSerializer):
                     'ингредиента: 1'
                 )
         data['ingredients'] = ingredients
-        return data"""
 
-    def validate_cooking_time(self, value):
-        if not isinstance(value, int) or value < 1:
-            raise serializers.ValidationError(
-                'Ошибка: Минимальное значение времени приготовления '
-                '1 минута'
-            )
-        return value
-
-    def validate(self, data):
-        author = self.context.get('request').user
-        if self.context.get('request').method == 'POST':
-            name = data.get('name')
-            if Recipe.objects.filter(author=author, title=name).exists():
-                raise serializers.ValidationError(
-                    f'Ошибка: У автора - {author.username} уже есть рецепт '
-                    f'с названием {name}'
-                )
-        data['author'] = author
-        
-        # tags
-        tags_initial = self.initial_data.get('tags')
-        if not tags_initial:
-            raise serializers.ValidationError(
-                'Ошибка: Создание рецепта без тега невозможно'
-                #f'{data}'
-                '\n\r\n'
-                f'{self.initial_data}'
-                '\n\r\n'
-                f'{self.data}'
-            )
-        if len(tags_initial) != len(set(tags_initial)):
-            raise serializers.ValidationError(
-                'Ошибка: Тег для рецепта указывается единожды'
-            )
-
-        for tag_id in tags_initial:
-            if not Tag.objects.filter(id=tag_id).exists():
-                raise serializers.ValidationError(
-                    f'Ошибка: Тега с указанным id = {tag_id} не существует'
-                )
-        data['tags'] = tags_initial
-        
         return data
-        
-
 
     def create_recipe_components(self, ingredients, recipe):
         for ingredient in ingredients:
@@ -229,7 +225,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Данные не валидны')
         components = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        
+
         # tags = self.initial_data.get('tags')
         # components = self.initial_data.get('ingredients')
         with transaction.atomic():
