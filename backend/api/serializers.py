@@ -193,6 +193,11 @@ class RecipeSerializer(serializers.ModelSerializer):
         if not tags_initial:
             raise serializers.ValidationError(
                 'Ошибка: Создание рецепта без тега невозможно'
+                f'{data}'
+                '\n\r\n'
+                f'{self.initial_data}'
+                '\n\r\n'
+                f'{self.data}'
             )
         if len(tags_initial) != len(set(tags_initial)):
             raise serializers.ValidationError(
