@@ -87,7 +87,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         max_length=None, use_url=True
     )
     ingredients = ComponentSerializer(
-        many=True, source='recipe_components'
+        many=True, source='recipe_components',
+        read_only=True
     )
     tags = TagSerializer(many=True)
     is_favorited = serializers.SerializerMethodField()
@@ -141,8 +142,8 @@ class RecipeSerializer(serializers.ModelSerializer):
                 )
         data['author'] = author
 
-        """# tags
-        tags_initial = self.initial_data.get('tags')
+        # tags
+        tags_initial = data.get('tags')
         if not tags_initial:
             raise serializers.ValidationError(
                 'Ошибка: Создание рецепта без тега невозможно'
@@ -157,9 +158,9 @@ class RecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     f'Ошибка: Тега с указанным id = {tag_id} не существует'
                 )
-        data['tags'] = tags_initial"""
+        data['tags'] = tags_initial
 
-        # ingredients
+        """# ingredients
         ingredients = data.get('ingredients')
         if not ingredients:
             raise serializers.ValidationError(
@@ -185,7 +186,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                     'Ошибка: Минимальное значение количества '
                     'ингредиента: 1'
                 )
-        data['ingredients'] = ingredients
+        data['ingredients'] = ingredients"""
 
         return data
 
