@@ -94,6 +94,15 @@ class RecipeSerializer(serializers.ModelSerializer):
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
+    """tags = ListField(
+        child=SlugRelatedField(
+            slug_field='id',
+            queryset=Tag.objects.all(),
+        ),
+    )"""
+
+
+
     class Meta:
         model = Recipe
         fields = (
@@ -131,7 +140,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             )
         return value
     
-    def validate_tags(self, data):
+    """def validate_tags(self, data):
         if not data:
             raise serializers.ValidationError(
                 'Ошибка: Создание рецепта без тега невозможно'
@@ -146,7 +155,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     f'Ошибка: Тега с указанным id = {tag_id} не существует'
                 )
-        return data
+        return data"""
 
     def validate(self, data):
         author = self.context.get('request').user
@@ -233,6 +242,8 @@ class RecipeSerializer(serializers.ModelSerializer):
             recipe.components.clear()
             recipe.tags.clear()
             self.create_recipe_components(components, recipe)
+            for tag in tags:
+                recipe.tags.add(tag)
             # recipe.tags.set(tags)
         return recipe
 
