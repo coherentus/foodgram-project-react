@@ -233,7 +233,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             recipe.components.clear()
             recipe.tags.clear()
             self.create_recipe_components(components, recipe)
-            recipe.tags.set(tags)
+            # recipe.tags.set(tags)
         return recipe
 
 
