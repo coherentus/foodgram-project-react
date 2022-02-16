@@ -157,10 +157,10 @@ class RecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     f'Ошибка: Тега с указанным id = {tag_id} не существует'
                 )
-        data['tags'] = tags_initial
+        data['tags'] = tags_initial"""
 
         # ingredients
-        ingredients = self.initial_data.get('ingredients')
+        ingredients = data.get('ingredients')
         if not ingredients:
             raise serializers.ValidationError(
                 'Ошибка: Невозможно создание рецепта без ингредиента'
@@ -185,7 +185,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                     'Ошибка: Минимальное значение количества '
                     'ингредиента: 1'
                 )
-        data['ingredients'] = ingredients"""
+        data['ingredients'] = ingredients
 
         return data
 
