@@ -87,9 +87,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         max_length=None, use_url=True
     )
     ingredients = ComponentSerializer(
-        many=True, read_only=True, source='recipe_components'
+        many=True, source='recipe_components'
     )
-    tags = TagSerializer(read_only=True, many=True)
+    tags = TagSerializer(many=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
@@ -141,7 +141,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 )
         data['author'] = author
 
-        # tags
+        """# tags
         tags_initial = self.initial_data.get('tags')
         if not tags_initial:
             raise serializers.ValidationError(
@@ -185,7 +185,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                     'Ошибка: Минимальное значение количества '
                     'ингредиента: 1'
                 )
-        data['ingredients'] = ingredients
+        data['ingredients'] = ingredients"""
 
         return data
 
@@ -199,8 +199,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def create(self, validated_data):
-        if not self.is_valid():
-            raise serializers.ValidationError('Данные не валидны')
         components = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         with transaction.atomic():
@@ -210,8 +208,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, recipe, validated_data):
-        if not self.is_valid():
-            raise serializers.ValidationError('Данные не валидны')
         tags = self.validated_data.pop('tags')
         components = self.validated_data.pop('ingredients')
         with transaction.atomic():
