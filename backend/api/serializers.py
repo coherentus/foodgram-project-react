@@ -130,6 +130,23 @@ class RecipeSerializer(serializers.ModelSerializer):
                 '1 минута'
             )
         return value
+    
+    def validate_tags(self, data):
+        if not data:
+            raise serializers.ValidationError(
+                'Ошибка: Создание рецепта без тега невозможно'
+            )
+        if len(data) != len(set(data)):
+            raise serializers.ValidationError(
+                'Ошибка: Тег для рецепта указывается единожды'
+            )
+
+        for tag_id in data:
+            if not Tag.objects.filter(id=tag_id).exists():
+                raise serializers.ValidationError(
+                    f'Ошибка: Тега с указанным id = {tag_id} не существует'
+                )
+        return data
 
     def validate(self, data):
         author = self.context.get('request').user
@@ -142,7 +159,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 )
         data['author'] = author
 
-        # tags
+        """# tags
         tags_initial = data.get('tags')
         if not tags_initial:
             raise serializers.ValidationError(
@@ -158,7 +175,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     f'Ошибка: Тега с указанным id = {tag_id} не существует'
                 )
-        data['tags'] = tags_initial
+        data['tags'] = tags_initial"""
 
         """# ingredients
         ingredients = data.get('ingredients')
