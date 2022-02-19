@@ -16,8 +16,8 @@ from .filters import ProductSearchFilter, RecipeQueryParamFilter
 from .paginations import PageLimitNumberPagination
 from .permissions import AuthorOrReadOnly
 from .serializers import (
-    CustomUserSerializer, ProductSerializer, RecipeSerializer,
-    RecipeShowSerializer, SubscribeSerializer, TagSerializer,
+    CustomUserSerializer, ProductSerializer, RecipeReadSerializer,
+    RecipeWriteSerializer, SubscribeSerializer, TagSerializer,
 )
 
 
@@ -77,7 +77,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = (AuthorOrReadOnly, )
     pagination_class = PageLimitNumberPagination
     queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
+    # serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend, )
     filter_class = RecipeQueryParamFilter
 
@@ -85,6 +85,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return RecipeReadSerializer(fields='__all__')
+        else:
+            return RecipeWriteSerializer
 
     def add_recipe(self, request, model, pk=None):
         """Add recipe into favorites or basket of current user.
@@ -98,7 +104,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             }, status=status.HTTP_400_BAD_REQUEST)
         recipe = get_object_or_404(Recipe, id=pk)
         model.objects.create(user=user, recipe=recipe)
-        serializer = RecipeShowSerializer(recipe)
+        serializer = RecipeReadSerializer(recipe, fields='__all__')
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def del_recipe(self, request, model, pk=None):
@@ -119,7 +125,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=True, methods=('post', 'delete'),
         permission_classes=(IsAuthenticated,),
         url_path='shopping_cart', url_name='basket',
-        serializer_class=RecipeShowSerializer
+        # serializer_class=RecipeShowSerializer
     )
     def shopping_cart(self, request, pk=None):
         if request.method == 'DELETE':
