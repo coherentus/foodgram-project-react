@@ -78,7 +78,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return False
 
 
-class RecipeIngredientWriteSerializer(ModelSerializer):
+class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Component
         fields = ('id', 'amount',)
