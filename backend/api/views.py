@@ -88,7 +88,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
-            return RecipeReadSerializer(fields='__all__')
+            return RecipeReadSerializer  # (fields='__all__')
         else:
             return RecipeWriteSerializer
 
