@@ -84,7 +84,7 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
         fields = ('id', 'amount',)
         extra_kwargs = {
             'id': {
-                'read_only': False,}}
+                'read_only': False, }}
         """        'error_messages': {
                     'does_not_exist': INGREDIENT_DOES_NOT_EXIST,
                 }
@@ -123,11 +123,12 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         ),
     )"""
     
-    
-    # tags payload from request [int,]
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Tag.objects.all())
+    """# tags payload from request [int,]
     tags = serializers.ListField(
         child=serializers.IntegerField()
-    )
+    )"""
 
     class Meta:
         model = Recipe
