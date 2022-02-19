@@ -78,6 +78,27 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return False
 
 
+class RecipeIngredientWriteSerializer(ModelSerializer):
+    class Meta:
+        model = Component
+        fields = ('id', 'amount',)
+        """extra_kwargs = {
+            'id': {
+                'read_only': False,
+                'error_messages': {
+                    'does_not_exist': INGREDIENT_DOES_NOT_EXIST,
+                }
+            },
+            'amount': {
+                'error_messages': {
+                    'min_value': INGREDIENT_MIN_AMOUNT_ERROR.format(
+                        min_value=INGREDIENT_MIN_AMOUNT
+                    ),
+                }
+            }
+        }"""
+
+
 class RecipeWriteSerializer(serializers.ModelSerializer):
     """Serializer for write Recipe model instance."""
     author = CustomUserSerializer(read_only=True)
@@ -86,15 +107,27 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         source='picture',
         max_length=None, use_url=True
     )
-    # ingredients payload from request [{'id': int, 'amount': int},]
+    ingredients = RecipeIngredientWriteSerializer(many=True)
+    
+    
+    
+    """# ingredients payload from request [{'id': int, 'amount': int},]
     ingredients = serializers.ListField(
         child=serializers.DictField(child=serializers.CharField())
         
+    )"""
+    tags = serializers.ListField(
+        child=serializers.SlugRelatedField(
+            slug_field='id',
+            queryset=Tag.objects.all(),
+        ),
     )
-    # tags payload from request [int,]
+    
+    
+    """# tags payload from request [int,]
     tags = serializers.ListField(
         child=serializers.IntegerField()
-    )
+    )"""
 
     class Meta:
         model = Recipe
@@ -112,7 +145,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 '1 минута'
             )
         return value
-    
+
     def validate_tags(self, value):
         if not value:
             raise serializers.ValidationError(
@@ -129,7 +162,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                     f'Ошибка: Тега с указанным id = {tag_id} не существует'
                 )
         return value
-    
+
     def validate_ingredients(self, value):
         if not value:
             raise serializers.ValidationError(
