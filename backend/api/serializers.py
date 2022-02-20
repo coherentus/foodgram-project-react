@@ -107,7 +107,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         source='picture',
         max_length=None, use_url=True
     )
-    ingredients = RecipeIngredientWriteSerializer(many=True)
+    ingredients = RecipeIngredientWriteSerializer(many=True, source='components')
     tags = serializers.ListField(
         child=serializers.SlugRelatedField(
             slug_field='id',
@@ -148,7 +148,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         for tag in data['tags']:
             if not Tag.objects.filter(id=tag.id).exists():
                 raise serializers.ValidationError(
-                    f'Ошибка: Тега с указанным id = {tag_id} не существует'
+                    f'Ошибка: Тега с указанным id = {tag.id} не существует'
                 )
         
         
