@@ -176,13 +176,13 @@ class RecipeWriteSerializer(serializers.Serializer):
                     'Ошибка: Ингредиента '
                     f'с указанным id = {cur_id} не существует')
             compnt_ids.append(cur_id)
-            if cur_amount < 1:
+            if int(cur_amount) < 1:
                 raise serializers.ValidationError(
                     'Ошибка: Минимальное количество ингредиента: 1')
-            if len(compnt_ids) != len(set(compnt_ids)):
-                raise serializers.ValidationError(
-                    'Ошибка: Ингредиент для рецепта указывается единожды'
-                )
+        if len(compnt_ids) != len(set(compnt_ids)):
+            raise serializers.ValidationError(
+                'Ошибка: Ингредиент для рецепта указывается единожды'
+            )
         return value
 
     def validate(self, data):
