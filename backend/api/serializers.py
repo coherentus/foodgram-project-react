@@ -107,7 +107,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         source='picture',
         max_length=None, use_url=True
     )
-    ingredients = RecipeIngredientWriteSerializer(many=True, source='components')
+    ingredients = ComponentSerializer(many=True, source='components')  # RecipeIngredientWriteSerializer
     tags = serializers.ListField(
         child=serializers.SlugRelatedField(
             slug_field='id',
