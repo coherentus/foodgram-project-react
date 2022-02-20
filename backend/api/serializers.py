@@ -142,8 +142,8 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 'Ошибка: Тег для рецепта указывается единожды'
             )
 
-        for tag_id in data['tags']:
-            if not Tag.objects.filter(id=tag_id).exists():
+        for tag in data['tags']:
+            if not Tag.objects.filter(id=tag.id).exists():
                 raise serializers.ValidationError(
                     f'Ошибка: Тега с указанным id = {tag_id} не существует'
                 )
