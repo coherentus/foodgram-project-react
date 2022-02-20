@@ -114,21 +114,21 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         child=serializers.DictField(child=serializers.CharField())
 
     )
-    """tags = serializers.ListField(
+    tags = serializers.ListField(
         child=serializers.SlugRelatedField(
             slug_field='id',
             queryset=Tag.objects.all(),
         ),
     )
 
-    tags = serializers.PrimaryKeyRelatedField(
+    """tags = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all())"""
     # tags payload from request [int,]
-    """tags = TagSerializer(many=True)"""
+    """tags = TagSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
         many=True
-    )
+    )"""
     """tags = serializers.ListField(
         child=serializers.IntegerField()
     )"""
