@@ -20,7 +20,8 @@ class CustomUserAdmin(UserAdmin):
     list_display_links = ('email', 'username', 'first_name')
     list_filter = ('first_name', 'is_staff', 'is_active',)
     fieldsets = (
-        (None, {'fields': ('email', 'username', 'password', 'first_name', 'last_name')}),
+        (None, {'fields': ('email', 'username', 'password',
+                           'first_name', 'last_name')}),
         ('Permissions', {'fields': ('is_staff', 'is_active')}),
     )
     add_fieldsets = (

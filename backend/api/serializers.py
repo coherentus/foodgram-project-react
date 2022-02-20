@@ -99,7 +99,7 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
         }"""
 
 
-class RecipeWriteSerializer(serializers.ModelSerializer):
+class RecipeWriteSerializer(serializers.Serializer):
     """Serializer for write Recipe model instance."""
     author = CustomUserSerializer(read_only=True)
     name = serializers.CharField(source='title')
@@ -107,28 +107,26 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         source='picture',
         max_length=None, use_url=True
     )
-    ingredients = RecipeIngredientWriteSerializer(many=True)
-    
-    
-    
-    """# ingredients payload from request [{'id': int, 'amount': int},]
+    # ingredients = RecipeIngredientWriteSerializer(many=True)
+
+    # ingredients payload from request [{'id': int, 'amount': int},]
     ingredients = serializers.ListField(
         child=serializers.DictField(child=serializers.CharField())
         
-    )"""
+    )
     """tags = serializers.ListField(
         child=serializers.SlugRelatedField(
             slug_field='id',
             queryset=Tag.objects.all(),
         ),
-    )"""
+    )
     
     tags = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Tag.objects.all())
-    """# tags payload from request [int,]
+        many=True, queryset=Tag.objects.all())"""
+    # tags payload from request [int,]
     tags = serializers.ListField(
         child=serializers.IntegerField()
-    )"""
+    )
 
     class Meta:
         model = Recipe
