@@ -179,13 +179,13 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             validated_data.pop('components'), validated_data.pop('tags')
         )
         for component in components:
-            recipe_components, _ = Component.objects.get_or_create(
+            recipe_component, _ = Component.objects.get_or_create(
                 product=get_object_or_404(Product, id=component['id']),
                 amount=component['amount'],
                 recipe=recipe
             )
-            recipe.components.set(recipe_components)
-            recipe.tags.set(tags)
+            recipe.components.add(recipe_component)
+        recipe.tags.set(tags)
         return recipe
 
     def create(self, validated_data):
