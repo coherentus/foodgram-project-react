@@ -180,7 +180,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         )
         for component in components:
             recipe_components, _ = Component.objects.get_or_create(
-                ingredient=get_object_or_404(Product, id=component['id']),
+                product=get_object_or_404(Product, id=component['id']),
                 amount=component['amount'],
             )
             recipe.components.add(recipe_components)
