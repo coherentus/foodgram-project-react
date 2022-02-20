@@ -175,15 +175,15 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         return data
 
     def add_components_and_tags(self, recipe, validated_data):
-        ingredients, tags = (
+        components, tags = (
             validated_data.pop('components'), validated_data.pop('tags')
         )
-        for ingredient in ingredients:
-            count_of_ingredient, _ = Component.objects.get_or_create(
-                ingredient=get_object_or_404(Product, id=ingredient['id']),
-                amount=ingredient['amount'],
+        for component in components:
+            recipe_components, _ = Component.objects.get_or_create(
+                ingredient=get_object_or_404(Product, id=component['id']),
+                amount=component['amount'],
             )
-            recipe.ingredients.add(count_of_ingredient)
+            recipe.components.add(recipe_components)
             recipe.tags.set(tags)
         return recipe
 
