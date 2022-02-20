@@ -99,7 +99,7 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
         }"""
 
 
-class RecipeWriteSerializer(serializers.Serializer):
+class RecipeWriteSerializer(serializers.ModelSerializer):
     """Serializer for write Recipe model instance."""
     author = CustomUserSerializer(read_only=True)
     name = serializers.CharField(source='title')
@@ -124,9 +124,13 @@ class RecipeWriteSerializer(serializers.Serializer):
     tags = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all())"""
     # tags payload from request [int,]
-    tags = serializers.ListField(
-        child=serializers.IntegerField()
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True
     )
+    """tags = serializers.ListField(
+        child=serializers.IntegerField()
+    )"""
 
     class Meta:
         model = Recipe
