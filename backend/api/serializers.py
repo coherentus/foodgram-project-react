@@ -10,15 +10,15 @@ from users.models import CustomUser
 
 class TagSerializer(serializers.ModelSerializer):
     """Serializer Tag model."""
-    id = serializers.IntegerField()
-    name = serializers.CharField(max_length=200)
-    color = serializers.CharField(max_length=7)
-    slug = serializers.SlugField(max_length=200)
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=200, read_only=True)
+    color = serializers.CharField(max_length=7, read_only=True)
+    slug = serializers.SlugField(max_length=200, read_only=True)
 
     class Meta:
         model = Tag
         fields = '__all__'
-        read_only_fields = ('id', 'name', 'color', 'slug')
+        # read_only_fields = ('id', 'name', 'color', 'slug')
 
 
 class ProductSerializer(serializers.ModelSerializer):
