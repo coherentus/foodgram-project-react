@@ -158,12 +158,12 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 )
         
         
-        if not data['ingredients']:
+        if not data['components']:
             raise serializers.ValidationError(
                 'Ошибка: Невозможно создание рецепта без ингредиента'
             )
         compnt_ids = []
-        for component in data['ingredients']:
+        for component in data['components']:
             cur_id, cur_amount = component['id'], component['amount']
             if not Product.objects.filter(id=cur_id).exists():
                 raise serializers.ValidationError(
@@ -181,7 +181,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
     def add_components_and_tags(self, recipe, validated_data):
         components, tags = (
-            validated_data.pop('ingredients'), validated_data.pop('tags')
+            validated_data.pop('components'), validated_data.pop('tags')
         )
         for component in components:
             _, created = Component.objects.get_or_create(
@@ -199,7 +199,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         saved = {}
-        saved['ingredients'] = validated_data.pop('ingredients')
+        saved['components'] = validated_data.pop('components')
         saved['tags'] = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data)
         return self.add_components_and_tags(recipe, saved)
