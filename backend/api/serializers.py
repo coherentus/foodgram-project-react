@@ -169,17 +169,23 @@ class RecipeWriteSerializer(serializers.Serializer):
                 'Ошибка: Невозможно создание рецепта без ингредиента'
             )
 
-        ingr_ids = [component['id'] for component in value]
-        if len(ingr_ids) != len(set(ingr_ids)):
-            raise serializers.ValidationError(
-                'Ошибка: Ингредиент для рецепта указывается единожды'
-            )
-        for ingrdnt_id in ingr_ids:
-            if not Product.objects.filter(id=ingrdnt_id).exists():
+        compnt_ids = []
+        for component in value:
+            cur_id, cur_amount = component['id'], component['amount']
+            if not Product.objects.filter(id=cur_id).exists():
                 raise serializers.ValidationError(
                     'Ошибка: Ингредиента '
-                    f'с указанным id = {ingrdnt_id} не существует'
+                    f'с указанным id = {cur_id} не существует')
+            compnt_ids.append[cur_id]
+            if cur_amount < 1:
+                raise serializers.ValidationError(
+                    'Ошибка: Минимальное количество ингредиента: 1')
+            if len(compnt_ids) != len(set(compnt_ids)):
+                raise serializers.ValidationError(
+                    'Ошибка: Ингредиент для рецепта указывается единожды'
                 )
+        return value
+        
 
     def validate(self, data):
         author = self.context.get('request').user
