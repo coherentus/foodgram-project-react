@@ -161,7 +161,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             )
 
         for tag_id in value:
-            if not Tag.objects.filter(id=tag_id).exists():
+            if not Tag.objects.filter(id=tag_id.id).exists():
                 raise serializers.ValidationError(
                     f'Ошибка: Тега с указанным id = {tag_id} не существует'
                 )
