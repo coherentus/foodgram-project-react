@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
@@ -101,7 +102,100 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
     """Serializer for write Recipe model instance."""
-    author = CustomUserSerializer(read_only=True)
+    image = Base64ImageField()
+    ingredients = RecipeIngredientWriteSerializer(many=True)
+    tags = serializers.ListField(
+        child=serializers.SlugRelatedField(
+            slug_field='id',
+            queryset=Tag.objects.all(),
+        ),
+    )
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'ingredients', 'tags', 'image', 'name', 'text', 'cooking_time',
+        )
+        """extra_kwargs = {
+            'cooking_time': {
+                'error_messages': {
+                    'min_value': COOKING_TIME_MIN_ERROR,
+                }
+            }
+        }"""
+        
+    def validate(self, data):
+        if data['cooking_time'] < 1:
+            raise serializers.ValidationError(
+                'Ошибка: Минимальное значение времени приготовления '
+                '1 минута'
+            )
+        
+        if not data['tags']:
+            raise serializers.ValidationError(
+                'Ошибка: Создание рецепта без тега невозможно'
+            )
+        if len(data['tags']) != len(set(data['tags'])):
+            raise serializers.ValidationError(
+                'Ошибка: Тег для рецепта указывается единожды'
+            )
+
+        for tag_id in data['tags']:
+            if not Tag.objects.filter(id=tag_id).exists():
+                raise serializers.ValidationError(
+                    f'Ошибка: Тега с указанным id = {tag_id} не существует'
+                )
+        
+        
+        if len(data['ingredients']) == 0:
+            raise serializers.ValidationError(
+                'Ошибка: Невозможно создание рецепта без ингредиента'
+            )
+        compnt_ids = []
+        for component in data['ingredients']:
+            cur_id, cur_amount = component['id'], component['amount']
+            if not Product.objects.filter(id=cur_id).exists():
+                raise serializers.ValidationError(
+                    'Ошибка: Ингредиента '
+                    f'с указанным id = {cur_id} не существует')
+            compnt_ids.append(cur_id)
+            if int(cur_amount) < 1:
+                raise serializers.ValidationError(
+                    'Ошибка: Минимальное количество ингредиента: 1')
+        if len(compnt_ids) != len(set(compnt_ids)):
+            raise serializers.ValidationError(
+                'Ошибка: Ингредиент для рецепта указывается единожды'
+            )
+
+        return data
+
+    def add_ingredients_and_tags(self, recipe, validated_data):
+        ingredients, tags = (
+            validated_data.pop('ingredients'), validated_data.pop('tags')
+        )
+        for ingredient in ingredients:
+            count_of_ingredient, _ = Component.objects.get_or_create(
+                ingredient=get_object_or_404(Product, id=ingredient['id']),
+                amount=ingredient['amount'],
+            )
+            recipe.ingredients.add(count_of_ingredient)
+            recipe.tags.set(tags)
+        return recipe
+
+    def create(self, validated_data):
+        saved = {}
+        saved['ingredients'] = validated_data.pop('ingredients')
+        saved['tags'] = validated_data.pop('tags')
+        recipe = Recipe.objects.create(**validated_data)
+        return self.add_ingredients_and_tags(recipe, saved)
+
+    def update(self, instance, validated_data):
+        instance.ingredients.clear()
+        instance.tags.clear()
+        instance = self.add_ingredients_and_tags(instance, validated_data)
+        return super().update(instance, validated_data)
+
+    """author = CustomUserSerializer(read_only=True)
     name = serializers.CharField(source='title')
     image = Base64ImageField(
         source='picture',
@@ -121,17 +215,17 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         ),
     )
 
-    """tags = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Tag.objects.all())"""
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Tag.objects.all())
     # tags payload from request [int,]
-    """tags = TagSerializer(many=True)
+    tags = TagSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
         many=True
-    )"""
-    """tags = serializers.ListField(
+    )
+    tags = serializers.ListField(
         child=serializers.IntegerField()
-    )"""
+    )
 
     class Meta:
         model = Recipe
@@ -231,7 +325,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             for tag in tags:
                 recipe.tags.add(Tag.objects(id=tag))
             recipe.tags.set(tags)
-        return recipe
+        return recipe"""
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
