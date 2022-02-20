@@ -110,6 +110,9 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         max_length=None, use_url=True
     )
     # ingredients = ComponentSerializer(many=True, source='components')  # RecipeIngredientWriteSerializer
+    ingredients = serializers.ListField(
+        child=serializers.DictField(child=serializers.CharField())
+    )
     tags = serializers.ListField(
         child=serializers.SlugRelatedField(
             slug_field='id',
