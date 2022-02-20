@@ -112,7 +112,7 @@ class RecipeWriteSerializer(serializers.Serializer):
     # ingredients payload from request [{'id': int, 'amount': int},]
     ingredients = serializers.ListField(
         child=serializers.DictField(child=serializers.CharField())
-        
+
     )
     """tags = serializers.ListField(
         child=serializers.SlugRelatedField(
@@ -120,7 +120,7 @@ class RecipeWriteSerializer(serializers.Serializer):
             queryset=Tag.objects.all(),
         ),
     )
-    
+
     tags = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all())"""
     # tags payload from request [int,]
@@ -131,12 +131,11 @@ class RecipeWriteSerializer(serializers.Serializer):
     class Meta:
         model = Recipe
         fields = (
-            # 'id', 
+            # 'id',
             'tags', 'author',
             'ingredients',
             'name', 'image', 'text', 'cooking_time'
         )
-
 
     def validate_cooking_time(self, value):
         if not isinstance(value, int) or value < 1:
@@ -176,7 +175,7 @@ class RecipeWriteSerializer(serializers.Serializer):
                 raise serializers.ValidationError(
                     'Ошибка: Ингредиента '
                     f'с указанным id = {cur_id} не существует')
-            compnt_ids.append[cur_id]
+            compnt_ids.append(cur_id)
             if cur_amount < 1:
                 raise serializers.ValidationError(
                     'Ошибка: Минимальное количество ингредиента: 1')
@@ -185,7 +184,6 @@ class RecipeWriteSerializer(serializers.Serializer):
                     'Ошибка: Ингредиент для рецепта указывается единожды'
                 )
         return value
-        
 
     def validate(self, data):
         author = self.context.get('request').user
@@ -250,7 +248,6 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
             existing = set(self.fields)
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
-
 
 
 class RecipeReadSerializer(DynamicFieldsModelSerializer):
@@ -350,7 +347,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField()
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
-    
+
     recipe_fields = ('id', 'name', 'image', 'cooking_time')
 
     class Meta:
