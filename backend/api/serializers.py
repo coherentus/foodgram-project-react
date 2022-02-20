@@ -192,7 +192,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         saved['components'] = validated_data.pop('components')
         saved['tags'] = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data)
-        return self.add_ingredients_and_tags(recipe, saved)
+        return self.add_components_and_tags(recipe, saved)
 
     def update(self, instance, validated_data):
         instance.components.clear()
