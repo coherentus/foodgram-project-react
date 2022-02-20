@@ -103,7 +103,10 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
 class RecipeWriteSerializer(serializers.ModelSerializer):
     """Serializer for write Recipe model instance."""
     name = serializers.CharField(source='title')
-    image = Base64ImageField()
+    image = Base64ImageField(
+        source='picture',
+        max_length=None, use_url=True
+    )
     ingredients = RecipeIngredientWriteSerializer(many=True)
     tags = serializers.ListField(
         child=serializers.SlugRelatedField(
