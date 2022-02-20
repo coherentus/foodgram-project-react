@@ -152,12 +152,12 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 )
         
         
-        if len(data['ingredients']) == 0:
+        if len(data['components']) == 0:
             raise serializers.ValidationError(
                 'Ошибка: Невозможно создание рецепта без ингредиента'
             )
         compnt_ids = []
-        for component in data['ingredients']:
+        for component in data['components']:
             cur_id, cur_amount = component['id'], component['amount']
             if not Product.objects.filter(id=cur_id).exists():
                 raise serializers.ValidationError(
