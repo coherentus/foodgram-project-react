@@ -184,7 +184,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 amount=component['amount'],
                 recipe=recipe
             )
-            recipe.components.add(recipe_components)
+            recipe.components.set(recipe_components)
             recipe.tags.set(tags)
         return recipe
 
