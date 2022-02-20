@@ -174,9 +174,9 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
         return data
 
-    def add_ingredients_and_tags(self, recipe, validated_data):
+    def add_components_and_tags(self, recipe, validated_data):
         ingredients, tags = (
-            validated_data.pop('ingredients'), validated_data.pop('tags')
+            validated_data.pop('components'), validated_data.pop('tags')
         )
         for ingredient in ingredients:
             count_of_ingredient, _ = Component.objects.get_or_create(
@@ -189,15 +189,15 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         saved = {}
-        saved['ingredients'] = validated_data.pop('ingredients')
+        saved['components'] = validated_data.pop('components')
         saved['tags'] = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data)
         return self.add_ingredients_and_tags(recipe, saved)
 
     def update(self, instance, validated_data):
-        instance.ingredients.clear()
+        instance.components.clear()
         instance.tags.clear()
-        instance = self.add_ingredients_and_tags(instance, validated_data)
+        instance = self.add_components_and_tags(instance, validated_data)
         return super().update(instance, validated_data)
 
     """author = CustomUserSerializer(read_only=True)
