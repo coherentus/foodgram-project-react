@@ -82,9 +82,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Component
-        fields = ('id', 'amount',
+        fields = ('id', 'amount',)
                   # recipe', 'product'
-            )
+        
         extra_kwargs = {
             'id': {
                 'read_only': False, }}
@@ -157,12 +157,12 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 )
         
         
-        if len(data['components']) == 0:
+        if not data['ingredients']:
             raise serializers.ValidationError(
                 'Ошибка: Невозможно создание рецепта без ингредиента'
             )
         compnt_ids = []
-        for component in data['components']:
+        for component in data['ingredients']:
             cur_id, cur_amount = component['id'], component['amount']
             if not Product.objects.filter(id=cur_id).exists():
                 raise serializers.ValidationError(
@@ -176,12 +176,11 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Ошибка: Ингредиент для рецепта указывается единожды'
             )
-
         return data
 
     def add_components_and_tags(self, recipe, validated_data):
         components, tags = (
-            validated_data.pop('components'), validated_data.pop('tags')
+            validated_data.pop('ingredients'), validated_data.pop('tags')
         )
         for component in components:
             _, created = Component.objects.get_or_create(
@@ -199,7 +198,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         saved = {}
-        saved['components'] = validated_data.pop('components')
+        saved['ingredients'] = validated_data.pop('ingredients')
         saved['tags'] = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data)
         return self.add_components_and_tags(recipe, saved)
