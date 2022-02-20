@@ -179,12 +179,16 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             validated_data.pop('components'), validated_data.pop('tags')
         )
         for component in components:
-            recipe_component, _ = Component.objects.get_or_create(
+            _, created = Component.objects.get_or_create(
                 product=get_object_or_404(Product, id=component['id']),
                 amount=component['amount'],
                 recipe=recipe
             )
-            recipe.components.add(recipe_component)
+            if not created:
+                raise serializers.ValidationError(
+                    'Ошибка: Ингредиент для рецепта указывается единожды'
+                )
+            # recipe.components.add(recipe_component)
         recipe.tags.set(tags)
         return recipe
 
