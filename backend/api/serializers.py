@@ -111,7 +111,8 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     )
     # ingredients = ComponentSerializer(many=True, source='components')  # RecipeIngredientWriteSerializer
     ingredients = serializers.ListField(
-        child=serializers.DictField(child=serializers.CharField())
+        child=serializers.DictField(child=serializers.CharField()),
+        source='components'
     )
     tags = serializers.ListField(
         child=serializers.SlugRelatedField(
