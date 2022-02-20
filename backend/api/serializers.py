@@ -82,7 +82,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Component
-        fields = ('id', 'amount', 'recipe', 'product')
+        fields = ('id', 'amount',
+                  # recipe', 'product'
+            )
         extra_kwargs = {
             'id': {
                 'read_only': False, }}
