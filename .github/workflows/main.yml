@@ -16,13 +16,13 @@ jobs:
 
     - name: Install dependencies
       run: |
+        cd backend/
         python -m pip install --upgrade pip 
         pip install flake8 pep8-naming flake8-broken-line flake8-return flake8-isort
         pip install -r backend/requirements.txt
     - name: Test with flake8 
       run: |
         python -m flake8
-        # --per-file-ignores='./api/views.py:R503 ./api_yamdb/settings.py:E501'
 
   build_and_push_to_docker_hub:
     name: Push Docker image to Docker Hub
@@ -44,6 +44,7 @@ jobs:
         with:
           push: true
           if: github.ref == 'refs/heads/master'
+          context: backend/
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_react:v1
   
   deploy:
@@ -58,6 +59,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
+            cd foodgram-react
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_react:v1
             sudo docker-compose stop
             sudo docker-compose rm -f web
