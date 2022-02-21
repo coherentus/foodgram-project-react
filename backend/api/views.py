@@ -9,6 +9,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from rest_framework.status import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
+    HTTP_400_BAD_REQUEST
+)
+
 from logic.models import Basket, FavourRecipe, Follow
 from recipes.models import Component, Product, Recipe, Tag
 from users.models import CustomUser as User
@@ -88,9 +95,22 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
-            return RecipeReadSerializer  # (fields='__all__')
+            return RecipeReadSerializer
         else:
             return RecipeWriteSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        serializer = RecipeReadSerializer(
+            instance=serializer.instance,
+            context={'request': self.request}
+        )
+        # headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=HTTP_201_CREATED,  # headers=headers
+        )
 
     def add_recipe(self, request, model, pk=None):
         """Add recipe into favorites or basket of current user.
