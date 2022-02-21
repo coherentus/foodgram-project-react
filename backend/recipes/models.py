@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib import admin
 from django.core.validators import MinValueValidator
 from django.db import models
-
 from pytils.translit import slugify
 
 User = settings.AUTH_USER_MODEL

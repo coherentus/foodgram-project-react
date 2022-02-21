@@ -7,14 +7,11 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet
-
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
-    HTTP_400_BAD_REQUEST
 )
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from logic.models import Basket, FavourRecipe, Follow
 from recipes.models import Component, Product, Recipe, Tag
@@ -110,6 +107,22 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # headers = self.get_success_headers(serializer.data)
         return Response(
             serializer.data, status=HTTP_201_CREATED,  # headers=headers
+        )
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=partial
+        )
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        serializer = RecipeReadSerializer(
+            instance=serializer.instance,
+            context={'request': self.request},
+        )
+        return Response(
+            serializer.data, status=HTTP_200_OK
         )
 
     def add_recipe(self, request, model, pk=None):
