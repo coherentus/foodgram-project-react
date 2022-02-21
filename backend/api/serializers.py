@@ -169,10 +169,10 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'Ошибка: Ингредиента '
                     f'с указанным id = {cur_id} не существует')
-            compnt_ids.append(cur_id)
             if int(cur_amount) < 1:
                 raise serializers.ValidationError(
                     'Ошибка: Минимальное количество ингредиента: 1')
+            compnt_ids.append(cur_id)
         if len(compnt_ids) != len(set(compnt_ids)):
             raise serializers.ValidationError(
                 'Ошибка: Ингредиент для рецепта указывается единожды'
@@ -198,11 +198,11 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         return recipe
 
     def create(self, validated_data):
-        saved = {}
-        saved['components'] = validated_data.pop('components')
-        saved['tags'] = validated_data.pop('tags')
+        m2m_data = {}
+        m2m_data['components'] = validated_data.pop('components')
+        m2m_data['tags'] = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data)
-        return self.add_components_and_tags(recipe, saved)
+        return self.add_components_and_tags(recipe, m2m_data)
 
     def update(self, instance, validated_data):
         instance.components.clear()
