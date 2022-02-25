@@ -9,3 +9,4 @@ django-filter==21.1
 reportlab==3.6.3
 drf-extra-fields
 psycopg2-binary==2.8.6
+python-dotenv
