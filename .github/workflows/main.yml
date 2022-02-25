@@ -82,8 +82,7 @@ jobs:
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
             echo DEBUG=${{ secrets.DEBUG }} >> .env
-            SECRET_KEY=SECRET_KEY=${{ secrets.SECRET_KEY }}
-            echo "$SECRET_KEY" >> .env
+            echo SECRET_KEY="${{ secrets.SECRET_KEY }}" >> .env
             sudo docker-compose up -d
   send_message:
     runs-on: ubuntu-latest
