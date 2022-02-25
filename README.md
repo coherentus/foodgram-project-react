@@ -1,4 +1,5 @@
 # praktikum_new_diplom
+[![Django-app workflow](https://github.com/coherentus/foodgram-project-react/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/coherentus/foodgram-project-react/actions/workflows/main.yml)
 
 Для запуска проекта локально неоходимы:
 
