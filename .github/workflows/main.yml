@@ -67,7 +67,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             # foodgram-react
-            cd ${{ secrets.PROJECT_FOLDER }}  
+            cd ~/${{ secrets.PROJECT_FOLDER }}  
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_react:v1
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:v1
             sudo docker-compose stop
