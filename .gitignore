@@ -140,3 +140,4 @@ dmypy.json
 # .idea
 .idea
 backend/api/class RecipeViewSet(viewsets.ModelViewSe.py
+backend/back.sqlite3
