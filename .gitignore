@@ -9,6 +9,8 @@ __pycache__/
 *$py.class
 
 *media/
+*static/
+
 
 # C extensions
 *.so
