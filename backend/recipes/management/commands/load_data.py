@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = 'Load ingredients data to DB'
 
     def handle(self, *args, **options):
-        with open('recipes/data/ingredients.csv', encoding='utf-8') as f:
+        with open('../data/ingredients.csv', encoding='utf-8') as f:
             reader = csv.reader(f)
             count = 0
             for row in reader:
