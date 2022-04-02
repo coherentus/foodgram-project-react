@@ -52,3 +52,7 @@
     sudo docker-compose exec backend python manage.py collectstatic
     ```
 
+
+Порядок разворачивания проекта на сервере:
+
+1. 
