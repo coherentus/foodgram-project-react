@@ -15,7 +15,7 @@ services:
     # container_name: foodgram_backend
     restart: always
     volumes:
-      - ../data:/code/data
+      - ../data:/code/recipes/data
       - static_value:/code/static/
       - media_value:/code/media/
     depends_on:
