@@ -24,7 +24,7 @@ class Command(BaseCommand):
                 print(f'Обработано: {count} записей.')
 
         print('Обработка файла ingredients.csv')
-        with open('./data/ingredients.csv', encoding='utf-8') as f:
+        with open('./recipes/data/ingredients.csv', encoding='utf-8') as f:
             reader = csv.reader(f)
             count = 0
             for row in reader:
