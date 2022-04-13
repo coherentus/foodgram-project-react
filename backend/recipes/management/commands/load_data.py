@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print('Обработка файла tags.csv')
-        with open('./data/tags.csv', encoding='utf-8') as f:
+        with open('./recipes/data/tags.csv', encoding='utf-8') as f:
             reader = csv.reader(f)
             count = 0
             for row in reader:
