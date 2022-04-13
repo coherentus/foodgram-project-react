@@ -91,7 +91,7 @@
             sudo docker-compose exec backend python manage.py collectstatic
             ```
         * необязательно, но возможно:
-            * загрузить заготовку БД для таблиц теков и продуктов. Имена таблиц и файлов прописаны в коде management-команды.
+            * загрузить заготовку БД для таблиц тегов и продуктов. Имена таблиц и файлов прописаны в коде management-команды.
             ```bash
             sudo docker-compose exec backend python manage.py load_data
             ```
