@@ -21,7 +21,7 @@ class Command(BaseCommand):
                     slug=slug
                 )
                 count += 1
-                print(f'Обработано: {count} записей.')    
+                print(f'Обработано: {count} записей.')
 
         print('Обработка файла ingredients.csv')
         with open('./data/ingredients.csv', encoding='utf-8') as f:
